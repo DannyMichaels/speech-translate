@@ -1,29 +1,31 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
-import Say from 'react-say';
+
+// services
 import translate from './services/translate';
+
+// components
+import Say from 'react-say';
+import Loading from './components/Loading';
+import PushableButton from './components/PushableButton';
+
+// icons
+import MicIcon from '@mui/icons-material/Mic';
+import MicNoneIcon from '@mui/icons-material/MicNone';
 
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
   const [targetLanguage, setTargetLanguage] = useState('ES');
+  const [isLoading, setIsLoading] = useState(false);
+
   const [text, setText] = useState('');
-
-  const selectedVoice = useMemo(() => {
-    const VOICES = {
-      'en-US': 'en-US',
-      ES: 'es-ES',
-    };
-
-    return VOICES[targetLanguage];
-  }, [targetLanguage]);
 
   const {
     transcript,
-    finalTranscript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
@@ -45,40 +47,38 @@ function App() {
 
   useEffect(() => {
     const translateMe = async () => {
-      if (!listening && transcript) {
-        const newText = await translate({
-          text: transcript,
-          sourceLanguage,
-          targetLanguage,
-        });
-        setText(newText);
+      try {
+        setIsLoading(true);
+        if (!listening && transcript) {
+          const newText = await translate({
+            text: transcript,
+            sourceLanguage,
+            targetLanguage,
+          });
+          setText(newText);
+        }
+      } catch (err) {
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
     };
 
     translateMe();
   }, [sourceLanguage, targetLanguage, listening, transcript]);
 
-  const onResetClick = () => {
+  const handleReset = () => {
     resetTranscript();
     setText('');
   };
 
-  useEffect(() => {
-    console.log({ SpeechRecognition });
-    // SpeechRecognition;
-    // SpeechRecognition?.addEventListener(
-    //   'end',
-    //   () => {
-    //     console.log('ended');
-
-    //     // setText('')
-    //   },
-    //   []
-    // );
+  const holdButtonListen = useCallback((touchStart) => {
+    if (touchStart) {
+      handleReset();
+    }
+    return SpeechRecognition.startListening({ continuous: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const holdButtonListen = () =>
-    SpeechRecognition.startListening({ continuous: true });
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -86,23 +86,28 @@ function App() {
 
   return (
     <div className="App">
-      {!listening && transcript && text ? (
-        <Say text={text} voice={voiceSelector} />
-      ) : null}
+
+      {!listening && text ? <Say text={text} voice={voiceSelector} /> : null}
 
       <p>Microphone: {listening ? 'on' : 'off'}</p>
+
       {/* <button onClick={SpeechRecognition.startListening}>Start</button>
       <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
 
-      <button
-        onTouchStart={holdButtonListen}
+      {!isLoading ? <PushableButton
+        text={!listening ? 'Push to talk' : 'Release'}
+        Icon={() => {
+          if (listening) return <MicIcon />;
+
+          return <MicNoneIcon />;
+        }}
+        onTouchStart={() => holdButtonListen(true)}
         onMouseDown={holdButtonListen}
         onTouchEnd={SpeechRecognition.stopListening}
-        onMouseUp={SpeechRecognition.stopListening}>
-        Hold to talk
-      </button>
+        onMouseUp={SpeechRecognition.stopListening}
+      /> : <Loading />}
+      {/* <button onClick={handleReset}>Reset</button> */}
 
-      <button onClick={onResetClick}>Reset</button>
       <p id="transcript">{transcript}</p>
     </div>
   );
