@@ -20,6 +20,7 @@ import MicNoneIcon from '@mui/icons-material/MicNone';
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
   const [targetLanguage, setTargetLanguage] = useState('ES');
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [text, setText] = useState('');
@@ -58,7 +59,7 @@ function App() {
           setText(newText);
         }
       } catch (err) {
-        throw err;
+        setError(err);
       } finally {
         setIsLoading(false);
       }
@@ -82,6 +83,14 @@ function App() {
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  if (error) {
+    return <pre>
+      <code>
+      {JSON.stringify(error, null, 2)}
+      </code>
+    </pre>
   }
 
   return (
