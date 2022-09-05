@@ -9,7 +9,7 @@ import SpeechRecognition, {
 import translate from './services/translate';
 
 // components
-import Say from 'react-say';
+// import Say from 'react-say';
 import Loading from './components/Loading';
 import PushableButton from './components/PushableButton';
 
@@ -41,7 +41,8 @@ function App() {
 
       const selectedVoice = VOICES[targetLanguage];
 
-      return [...voices].find((v) => v.lang === selectedVoice);
+      // return [...voices].find((v) => v.lang === selectedVoice);
+      return selectedVoice;
     },
     [targetLanguage]
   );
@@ -90,6 +91,12 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const speakThat = new SpeechSynthesisUtterance(text);
+    speakThat.lang = voiceSelector();
+    window.speechSynthesis.speak(speakThat);
+  }, [text, voiceSelector]);
+
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
@@ -104,7 +111,7 @@ function App() {
 
   return (
     <div className="App">
-      {!listening && text ? <Say text={text} voice={voiceSelector} /> : null}
+      {/* {!listening && text ? <Say text={text} voice={voiceSelector} /> : null} */}
 
       <p>Microphone: {listening ? 'on' : 'off'}</p>
 

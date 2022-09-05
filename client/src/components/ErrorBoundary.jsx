@@ -13,7 +13,7 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    this.setState({ hasError: true, error, errorInfo });
+    this.setState({ hasError: true, error: error.message, errorInfo });
 
     // You can also log the error to an error reporting service
     console.log({ error, errorInfo });
@@ -26,8 +26,16 @@ class ErrorBoundary extends Component {
         <div>
           <h1>Something went wrong</h1>
 
-          <pre>
-            <code>{JSON.stringify(this.state.error, null, 2)}</code>
+          <pre
+            style={{
+              maxWidth: '70%',
+              overflow: 'scroll',
+              wordBreak: 'break-word',
+              padding: '10px',
+              background: '#000',
+              color: 'red',
+            }}>
+            <code>error: {JSON.stringify(this.state.error, null, 2)}</code>
             <br />
             <code>{JSON.stringify(this.state.errorInfo, null, 2)}</code>
           </pre>
