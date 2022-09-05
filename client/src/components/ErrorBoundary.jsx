@@ -9,7 +9,7 @@ class ErrorBoundary extends Component {
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
 
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -27,10 +27,9 @@ class ErrorBoundary extends Component {
           <h1>Something went wrong</h1>
 
           <pre>
-            {JSON.stringify(this.state.error, null, 2)}
+            <code>{JSON.stringify(this.state.error, null, 2)}</code>
             <br />
-
-            {JSON.stringify(this.state.errorInfo, null, 2)}
+            <code>{JSON.stringify(this.state.errorInfo, null, 2)}</code>
           </pre>
         </div>
       );

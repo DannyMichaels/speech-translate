@@ -60,6 +60,7 @@ function App() {
         }
       } catch (err) {
         setError(err);
+        throw err;
       } finally {
         setIsLoading(false);
       }
