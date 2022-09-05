@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api-free.deepl.com/v2',
-  headers: {
-    'Authorization': process.env.REACT_APP_DEEPL_AUTH_KEY,
-  },
+  baseURL: 'http://localhost:3000/api',
 });
 
-export default api
+export default api;
