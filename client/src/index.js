@@ -4,9 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from './components/ErrorBoundary';
-import { enableAutoTTS } from 'enable-auto-tts';
-
-enableAutoTTS();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

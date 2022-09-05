@@ -8,6 +8,9 @@ import SpeechRecognition, {
 // services
 import translate from './services/translate';
 
+// utils
+import enableAutoTTS from './utils/enableAutoTTS';
+
 // components
 import Say from 'react-say';
 import Loading from './components/Loading';
@@ -31,6 +34,14 @@ function App() {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  useLayoutEffect(() => {
+    enableAutoTTS();
+
+    return () => {
+      // unsubscribe();
+    };
+  }, []);
 
   const voiceSelector = useCallback(
     (voices) => {
