@@ -4029,6 +4029,11 @@ emojis-list@^3.0.0:
   resolved "https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz"
   integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
+enable-auto-tts@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/enable-auto-tts/-/enable-auto-tts-0.1.2.tgz#bba49dc9f6816c4779798fdeaf90d5cee3671b07"
+  integrity sha512-hNeOU6CrhUR6LHdRSfPdUEhXFVmC7/0A4fLJ4cbXVB9XXBLm6A0g+v2BQWNT4abfJEpG7Hd6xHj4IZMJ5nuGzA==
+
 encodeurl@~1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/encodeurl/-/encodeurl-1.0.2.tgz"
