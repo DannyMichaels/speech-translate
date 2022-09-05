@@ -120,6 +120,7 @@ function App() {
           }}
           onTouchStart={() => holdButtonListen(true)}
           onMouseDown={holdButtonListen}
+          onMouseLeave={SpeechRecognition.stopListening}
           onTouchEnd={SpeechRecognition.stopListening}
           onMouseUp={SpeechRecognition.stopListening}
         />
