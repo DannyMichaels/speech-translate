@@ -37,6 +37,7 @@
 }
 
 .front {
+  user-select: none;
   display: flex;
   align-items: center;
   position: relative;

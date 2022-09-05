@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import './App.css';
 
 import SpeechRecognition, {
@@ -68,6 +68,14 @@ function App() {
     translateMe();
   }, [sourceLanguage, targetLanguage, listening, transcript]);
 
+  useLayoutEffect(() => {
+    // run this so it asks for permission.
+    SpeechRecognition.startListening();
+    setTimeout(() => {
+      SpeechRecognition.stopListening();
+    }, 0);
+  }, []);
+
   const handleReset = () => {
     resetTranscript();
     setText('');
@@ -86,16 +94,15 @@ function App() {
   }
 
   if (error) {
-    return <pre>
-      <code>
-      {JSON.stringify(error, null, 2)}
-      </code>
-    </pre>
+    return (
+      <pre>
+        <code>{JSON.stringify(error, null, 2)}</code>
+      </pre>
+    );
   }
 
   return (
     <div className="App">
-
       {!listening && text ? <Say text={text} voice={voiceSelector} /> : null}
 
       <p>Microphone: {listening ? 'on' : 'off'}</p>
@@ -103,18 +110,22 @@ function App() {
       {/* <button onClick={SpeechRecognition.startListening}>Start</button>
       <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
 
-      {!isLoading ? <PushableButton
-        text={!listening ? 'Push to talk' : 'Release'}
-        Icon={() => {
-          if (listening) return <MicIcon />;
+      {!isLoading ? (
+        <PushableButton
+          text={!listening ? 'Push to talk' : 'Release'}
+          Icon={() => {
+            if (listening) return <MicIcon />;
 
-          return <MicNoneIcon />;
-        }}
-        onTouchStart={() => holdButtonListen(true)}
-        onMouseDown={holdButtonListen}
-        onTouchEnd={SpeechRecognition.stopListening}
-        onMouseUp={SpeechRecognition.stopListening}
-      /> : <Loading />}
+            return <MicNoneIcon />;
+          }}
+          onTouchStart={() => holdButtonListen(true)}
+          onMouseDown={holdButtonListen}
+          onTouchEnd={SpeechRecognition.stopListening}
+          onMouseUp={SpeechRecognition.stopListening}
+        />
+      ) : (
+        <Loading />
+      )}
       {/* <button onClick={handleReset}>Reset</button> */}
 
       <p id="transcript">{transcript}</p>
