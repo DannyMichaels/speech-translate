@@ -61,10 +61,15 @@ function App() {
       try {
         setIsLoading(true);
         if (!listening && transcript) {
+          const locales = {
+            EN: 'en-US',
+            ES: 'ES',
+          };
+
           const newTranslation = await translate({
             text: transcript,
-            sourceLanguage,
-            targetLanguage,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: locales[targetLanguage],
           });
           setTranslatedText(newTranslation);
         }
@@ -140,7 +145,12 @@ function App() {
   return (
     <div className="App">
       <main>
-        <LanguageSelect />
+        <LanguageSelect
+          sourceLanguage={sourceLanguage}
+          setSourceLanguage={setSourceLanguage}
+          targetLanguage={targetLanguage}
+          setTargetLanguage={setTargetLanguage}
+        />
         <p>Microphone: {listening ? 'on' : 'off'}</p>
 
         <div className="button__container">

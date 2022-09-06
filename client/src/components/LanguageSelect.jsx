@@ -7,7 +7,13 @@ const defaultOpts = [
   { label: 'Español', value: 'ES', code: 'ES' },
 ];
 
-function LanguageSelect({ onChange, value, options = defaultOpts }) {
+function LanguageSelect({
+  sourceLanguage,
+  targetLanguage,
+  setSourceLanguage,
+  setTargetLanguage,
+  options = defaultOpts,
+}) {
   return (
     <div className="row align-center justify-between gap-20">
       <ComboBox
@@ -16,9 +22,10 @@ function LanguageSelect({ onChange, value, options = defaultOpts }) {
             ? 'lengua origen'
             : 'source language'
         }
-        value={'EN'}
+        value={sourceLanguage}
         options={options}
         renderOption={renderOption}
+        onChange={(_, opt) => setSourceLanguage(opt.value)}
       />
 
       <ComboBox
@@ -27,9 +34,10 @@ function LanguageSelect({ onChange, value, options = defaultOpts }) {
             ? 'idioma de destino'
             : 'target language'
         }
-        value={'ES'}
+        value={targetLanguage}
         options={options}
         renderOption={renderOption}
+        onChange={(_, opt) => setTargetLanguage(opt.value)}
       />
     </div>
   );
