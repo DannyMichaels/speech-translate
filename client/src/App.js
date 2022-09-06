@@ -8,6 +8,9 @@ import SpeechRecognition, {
 // services
 import translate from './services/translate';
 
+// utils
+import iosVoices from './utils/iosVoices';
+
 // components
 // import Say from 'react-say';
 import Loading from './components/Loading';
@@ -17,7 +20,6 @@ import PushableButton from './components/PushableButton';
 import MicIcon from '@mui/icons-material/Mic';
 import MicNoneIcon from '@mui/icons-material/MicNone';
 import Footer from './components/Footer';
-import iosVoices from './utils/iosVoices';
 
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
