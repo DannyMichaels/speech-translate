@@ -1,6 +1,4 @@
 // https://www.joshwcomeau.com/animation/3d-button/
-
-import React from 'react';
 import './PushableButton.css';
 
 function PushableButton({ text = 'Push Me', Icon, ...rest }) {

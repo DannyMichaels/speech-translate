@@ -9,22 +9,23 @@ import SpeechRecognition, {
 import translate from './services/translate';
 
 // utils
-import iosVoices from './utils/iosVoices';
+import { speak } from './utils/speechUtils';
 
 // components
-// import Say from 'react-say';
 import Loading from './components/Loading';
 import PushableButton from './components/PushableButton';
+import Transcripts from './components/Transcripts';
+import Footer from './components/Footer';
+import LanguageSelect from './components/LanguageSelect';
 
 // icons
 import MicIcon from '@mui/icons-material/Mic';
 import MicNoneIcon from '@mui/icons-material/MicNone';
-import Footer from './components/Footer';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
   const [targetLanguage, setTargetLanguage] = useState('ES');
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -55,23 +56,6 @@ function App() {
     }
   }, []);
 
-  const voiceSelector = useCallback(
-    (voices) => {
-      const actualVoices = !voices?.length ? iosVoices : voices;
-
-      const VOICES = {
-        'en-US': 'en-US',
-        ES: 'es-ES',
-      };
-
-      const selectedVoice = VOICES[targetLanguage];
-
-      return [...actualVoices].find((v) => v.lang === selectedVoice);
-      // return selectedVoice;
-    },
-    [targetLanguage]
-  );
-
   useEffect(() => {
     const translateMe = async () => {
       try {
@@ -85,7 +69,6 @@ function App() {
           setTranslatedText(newTranslation);
         }
       } catch (err) {
-        setError(err);
         throw err;
       } finally {
         setIsLoading(false);
@@ -121,28 +104,32 @@ function App() {
     [isDisabled, listening, transcript]
   );
 
-  useEffect(() => {
-    if (!listening && translatedText) {
-      const utter = new SpeechSynthesisUtterance(translatedText);
-      const voices = speechSynthesis.getVoices();
+  const handleSpeak = () => {
+    const locales = {
+      EN: 'en-US',
+      ES: 'es-ES',
+    };
 
-      utter.voice = voiceSelector(voices);
+    return speak({
+      locale: locales[targetLanguage],
+      text: translatedText,
 
-      utter.volume = 1;
-
-      utter.onstart = () => {
+      onStart: () => {
         console.log('started');
         setIsSpeaking(true);
-      };
+      },
 
-      utter.onend = () => {
+      onEnd: () => {
         console.log('ended');
         setIsSpeaking(false);
-      };
+      },
+    });
+  };
 
-      window.speechSynthesis.speak(utter);
+  useEffect(() => {
+    if (!listening && translatedText) {
+      handleSpeak();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listening, translatedText]);
 
@@ -150,23 +137,11 @@ function App() {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-  if (error) {
-    return (
-      <pre>
-        <code>{JSON.stringify(error, null, 2)}</code>
-      </pre>
-    );
-  }
-
   return (
     <div className="App">
       <main>
-        {/* {!listening && text ? <Say text={text} voice={voiceSelector} /> : null} */}
-
+        <LanguageSelect />
         <p>Microphone: {listening ? 'on' : 'off'}</p>
-
-        {/* <button onClick={SpeechRecognition.startListening}>Start</button>
-      <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
 
         <div className="button__container">
           {!isLoading ? (
@@ -187,25 +162,29 @@ function App() {
           ) : (
             <Loading />
           )}
-        </div>
-        {/* <button onClick={handleReset}>Reset</button> */}
 
-        <div style={{ margin: '20px', minHeight: '20px', maxHeight: '20px' }}>
-          {!isSpeaking ? transcript : null}
+          {/* <IOSOnly> */}
+          {translatedText && (
+            <PushableButton
+              style={{ marginLeft: '10px' }}
+              disabled={isDisabled}
+              text="Speak"
+              Icon={() => {
+                return <VolumeUpIcon />;
+              }}
+              onClick={handleSpeak}
+            />
+          )}
+          {/* </IOSOnly> */}
         </div>
 
         <div className="separator" />
-        <div className="transcripts">
-          {!listening && transcript && (
-            <>
-              <textarea id="transcript__sourceLanguage" value={transcript} />
-              <textarea
-                id="transcript__targetLanguage"
-                value={translatedText}
-              />
-            </>
-          )}
-        </div>
+        <Transcripts
+          isSpeaking={isSpeaking}
+          listening={listening}
+          transcript={transcript}
+          translatedText={translatedText}
+        />
       </main>
       <Footer />
     </div>

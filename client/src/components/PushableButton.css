@@ -6,6 +6,12 @@
   cursor: pointer;
   outline-offset: 4px;
   transition: filter 250ms;
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 .shadow {
@@ -37,7 +43,12 @@
 }
 
 .front {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
   user-select: none;
+
   display: flex;
   align-items: center;
   position: relative;
