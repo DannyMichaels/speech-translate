@@ -17,6 +17,7 @@ import PushableButton from './components/PushableButton';
 import MicIcon from '@mui/icons-material/Mic';
 import MicNoneIcon from '@mui/icons-material/MicNone';
 import Footer from './components/Footer';
+import iosVoices from './utils/iosVoices';
 
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
@@ -45,6 +46,8 @@ function App() {
 
   const voiceSelector = useCallback(
     (voices) => {
+      const actualVoices = !voices?.length ? iosVoices : voices;
+
       const VOICES = {
         'en-US': 'en-US',
         ES: 'es-ES',
@@ -52,7 +55,7 @@ function App() {
 
       const selectedVoice = VOICES[targetLanguage];
 
-      return [...voices].find((v) => v.lang === selectedVoice);
+      return [...actualVoices].find((v) => v.lang === selectedVoice);
       // return selectedVoice;
     },
     [targetLanguage]
