@@ -16,6 +16,7 @@ import PushableButton from './components/PushableButton';
 // icons
 import MicIcon from '@mui/icons-material/Mic';
 import MicNoneIcon from '@mui/icons-material/MicNone';
+import Footer from './components/Footer';
 
 function App() {
   const [sourceLanguage, setSourceLanguage] = useState('EN');
@@ -126,34 +127,37 @@ function App() {
 
   return (
     <div className="App">
-      {/* {!listening && text ? <Say text={text} voice={voiceSelector} /> : null} */}
+      <main>
+        {/* {!listening && text ? <Say text={text} voice={voiceSelector} /> : null} */}
 
-      <p>Microphone: {listening ? 'on' : 'off'}</p>
+        <p>Microphone: {listening ? 'on' : 'off'}</p>
 
-      {/* <button onClick={SpeechRecognition.startListening}>Start</button>
+        {/* <button onClick={SpeechRecognition.startListening}>Start</button>
       <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
 
-      {!isLoading ? (
-        <PushableButton
-          disabled={isDisabled}
-          text={!listening ? 'Push to talk' : 'Release'}
-          Icon={() => {
-            if (listening) return <MicIcon />;
+        {!isLoading ? (
+          <PushableButton
+            disabled={isDisabled}
+            text={!listening ? 'Push to talk' : 'Release'}
+            Icon={() => {
+              if (listening) return <MicIcon />;
 
-            return <MicNoneIcon />;
-          }}
-          onTouchStart={() => holdButtonListen(true)}
-          onMouseDown={holdButtonListen}
-          onMouseLeave={SpeechRecognition.stopListening}
-          onTouchEnd={SpeechRecognition.stopListening}
-          onMouseUp={SpeechRecognition.stopListening}
-        />
-      ) : (
-        <Loading />
-      )}
-      {/* <button onClick={handleReset}>Reset</button> */}
+              return <MicNoneIcon />;
+            }}
+            onTouchStart={() => holdButtonListen(true)}
+            onMouseDown={holdButtonListen}
+            onMouseLeave={SpeechRecognition.stopListening}
+            onTouchEnd={SpeechRecognition.stopListening}
+            onMouseUp={SpeechRecognition.stopListening}
+          />
+        ) : (
+          <Loading />
+        )}
+        {/* <button onClick={handleReset}>Reset</button> */}
 
-      <p id="transcript">{transcript}</p>
+        <p id="transcript">{transcript}</p>
+      </main>
+      <Footer />
     </div>
   );
 }
