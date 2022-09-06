@@ -37,14 +37,6 @@ function Home() {
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
   useLayoutEffect(() => {
-    // run this so it asks for permission.
-    SpeechRecognition.startListening();
-    setTimeout(() => {
-      SpeechRecognition.stopListening();
-    }, 0);
-  }, []);
-
-  useLayoutEffect(() => {
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel(); // removes anything 'stuck'
       speechSynthesis.getVoices();
