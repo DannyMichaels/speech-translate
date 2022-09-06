@@ -27,6 +27,7 @@ function App() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const [translatedText, setTranslatedText] = useState('');
 
@@ -131,10 +132,12 @@ function App() {
 
       utter.onstart = () => {
         console.log('started');
+        setIsSpeaking(true);
       };
 
       utter.onend = () => {
         console.log('ended');
+        setIsSpeaking(false);
       };
 
       window.speechSynthesis.speak(utter);
@@ -187,13 +190,22 @@ function App() {
         </div>
         {/* <button onClick={handleReset}>Reset</button> */}
 
+        <div style={{ margin: '20px', minHeight: '20px', maxHeight: '20px' }}>
+          {!isSpeaking ? transcript : null}
+        </div>
+
         <div className="separator" />
-        {!listening && transcript && (
-          <div className="transcripts">
-            <textarea id="transcript__sourceLanguage" value={transcript} />
-            <textarea id="transcript__targetLanguage" value={translatedText} />
-          </div>
-        )}
+        <div className="transcripts">
+          {!listening && transcript && (
+            <>
+              <textarea id="transcript__sourceLanguage" value={transcript} />
+              <textarea
+                id="transcript__targetLanguage"
+                value={translatedText}
+              />
+            </>
+          )}
+        </div>
       </main>
       <Footer />
     </div>
