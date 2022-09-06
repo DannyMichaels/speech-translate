@@ -13,19 +13,3 @@ main {
   align-items: center;
   flex-grow: 1;
 }
-
-.transcripts {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  /* min-height: 100px; */
-}
-
-.button__container {
-  /* min-height: 100px; */
-}
-
-.separator {
-  display: flex;
-  min-height: 20px;
-}

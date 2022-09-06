@@ -4,7 +4,7 @@ function Transcripts({ isSpeaking, listening, transcript, translatedText }) {
   return (
     <div style={{ width: '100%' }}>
       <div style={{ margin: '20px', minHeight: '20px', maxHeight: '20px' }}>
-        {/* {!isSpeaking ? transcript : null} */}
+        {!isSpeaking && listening ? transcript : null}
       </div>
       <div className="transcripts">
         {!listening && transcript && (

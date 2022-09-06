@@ -1,21 +1,23 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import ComboBox from './ComboBox';
+import { useLanguageStore } from '../stores/language-store';
 
 const defaultOpts = [
   { label: 'English', value: 'EN', code: 'US' },
   { label: 'Español', value: 'ES', code: 'ES' },
 ];
 
-function LanguageSelect({
-  sourceLanguage,
-  targetLanguage,
-  setSourceLanguage,
-  setTargetLanguage,
-  options = defaultOpts,
-}) {
+function LanguageSelect({ options = defaultOpts }) {
+  const {
+    sourceLanguage,
+    setSourceLanguage,
+    targetLanguage,
+    setTargetLanguage,
+  } = useLanguageStore();
+
   return (
-    <div className="row align-center justify-between gap-20">
+    <div className="row align-center justify-center gap-20 flex-wrap">
       <ComboBox
         label={
           navigator.language.toLowerCase().includes('es')
