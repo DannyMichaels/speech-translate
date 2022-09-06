@@ -36,6 +36,14 @@ function App() {
   } = useSpeechRecognition();
 
   useLayoutEffect(() => {
+    // run this so it asks for permission.
+    SpeechRecognition.startListening();
+    setTimeout(() => {
+      SpeechRecognition.stopListening();
+    }, 0);
+  }, []);
+
+  useLayoutEffect(() => {
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel(); // removes anything 'stuck'
       speechSynthesis.getVoices();
@@ -83,14 +91,6 @@ function App() {
 
     translateMe();
   }, [sourceLanguage, targetLanguage, listening, transcript]);
-
-  useLayoutEffect(() => {
-    // run this so it asks for permission.
-    SpeechRecognition.startListening();
-    setTimeout(() => {
-      SpeechRecognition.stopListening();
-    }, 0);
-  }, []);
 
   const handleReset = () => {
     resetTranscript();
