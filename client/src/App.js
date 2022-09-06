@@ -25,7 +25,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
 
-  const [text, setText] = useState('');
+  const [translatedText, setTranslatedText] = useState('');
 
   const {
     transcript,
@@ -52,8 +52,8 @@ function App() {
 
       const selectedVoice = VOICES[targetLanguage];
 
-      // return [...voices].find((v) => v.lang === selectedVoice);
-      return selectedVoice;
+      return [...voices].find((v) => v.lang === selectedVoice);
+      // return selectedVoice;
     },
     [targetLanguage]
   );
@@ -63,12 +63,12 @@ function App() {
       try {
         setIsLoading(true);
         if (!listening && transcript) {
-          const newText = await translate({
+          const newTranslation = await translate({
             text: transcript,
             sourceLanguage,
             targetLanguage,
           });
-          setText(newText);
+          setTranslatedText(newTranslation);
         }
       } catch (err) {
         setError(err);
@@ -91,31 +91,50 @@ function App() {
 
   const handleReset = () => {
     resetTranscript();
-    setText('');
+    setTranslatedText('');
   };
 
   const holdButtonListen = useCallback(
-    (touchStart) => {
+    (isTouchStart) => {
       if (isDisabled) return;
 
-      if (touchStart) {
+      if (isTouchStart) {
         handleReset();
+        if (listening && transcript) {
+          window.speechSynthesis.cancel();
+          SpeechRecognition.stopListening();
+        }
       }
-      return SpeechRecognition.startListening({ continuous: true });
+
+      setTimeout(() => {
+        return SpeechRecognition.startListening({ continuous: true });
+      }, 0);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isDisabled]
+    [isDisabled, listening, transcript]
   );
 
   useEffect(() => {
-    if (!listening) {
-      const utter = new SpeechSynthesisUtterance(transcript);
-      // utter.lang = voiceSelector();
+    if (!listening && translatedText) {
+      const utter = new SpeechSynthesisUtterance(translatedText);
+      const voices = speechSynthesis.getVoices();
+      utter.voice = voiceSelector(voices);
+
       utter.volume = 1;
+
+      utter.onstart = () => {
+        console.log('started');
+      };
+
+      utter.onend = () => {
+        console.log('ended');
+      };
 
       window.speechSynthesis.speak(utter);
     }
-  }, [listening, transcript]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listening, translatedText]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -139,27 +158,35 @@ function App() {
         {/* <button onClick={SpeechRecognition.startListening}>Start</button>
       <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
 
-        {!isLoading ? (
-          <PushableButton
-            disabled={isDisabled}
-            text={!listening ? 'Push to talk' : 'Release'}
-            Icon={() => {
-              if (listening) return <MicIcon />;
+        <div className="button__container">
+          {!isLoading ? (
+            <PushableButton
+              disabled={isDisabled}
+              text={!listening ? 'Push to talk' : 'Release'}
+              Icon={() => {
+                if (listening) return <MicIcon />;
 
-              return <MicNoneIcon />;
-            }}
-            onTouchStart={() => holdButtonListen(true)}
-            onMouseDown={holdButtonListen}
-            onMouseLeave={SpeechRecognition.stopListening}
-            onTouchEnd={SpeechRecognition.stopListening}
-            onMouseUp={SpeechRecognition.stopListening}
-          />
-        ) : (
-          <Loading />
-        )}
+                return <MicNoneIcon />;
+              }}
+              onTouchStart={() => holdButtonListen(true)}
+              onMouseDown={holdButtonListen}
+              onMouseLeave={SpeechRecognition.stopListening}
+              onTouchEnd={SpeechRecognition.stopListening}
+              onMouseUp={SpeechRecognition.stopListening}
+            />
+          ) : (
+            <Loading />
+          )}
+        </div>
         {/* <button onClick={handleReset}>Reset</button> */}
 
-        <p id="transcript">{transcript}</p>
+        <div className="separator" />
+        {!listening && transcript && (
+          <div className="transcripts">
+            <textarea id="transcript__sourceLanguage" value={transcript} />
+            <textarea id="transcript__targetLanguage" value={translatedText} />
+          </div>
+        )}
       </main>
       <Footer />
     </div>
