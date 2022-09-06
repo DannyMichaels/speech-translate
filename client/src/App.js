@@ -22,6 +22,7 @@ function App() {
   const [targetLanguage, setTargetLanguage] = useState('ES');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setDisabled] = useState(true);
 
   const [text, setText] = useState('');
 
@@ -31,6 +32,15 @@ function App() {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  useLayoutEffect(() => {
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel(); // removes anything 'stuck'
+      speechSynthesis.getVoices();
+      // Safari loads voices synchronously so now safe to enable
+      setDisabled(false);
+    }
+  }, []);
 
   const voiceSelector = useCallback(
     (voices) => {
@@ -83,18 +93,23 @@ function App() {
     setText('');
   };
 
-  const holdButtonListen = useCallback((touchStart) => {
-    if (touchStart) {
-      handleReset();
-    }
-    return SpeechRecognition.startListening({ continuous: true });
+  const holdButtonListen = useCallback(
+    (touchStart) => {
+      if (isDisabled) return;
+
+      if (touchStart) {
+        handleReset();
+      }
+      return SpeechRecognition.startListening({ continuous: true });
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [isDisabled]
+  );
 
   useEffect(() => {
-    const speakThat = new SpeechSynthesisUtterance(text);
-    speakThat.lang = voiceSelector();
-    window.speechSynthesis.speak(speakThat);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = voiceSelector();
+    window.speechSynthesis.speak(utter);
   }, [text, voiceSelector]);
 
   if (!browserSupportsSpeechRecognition) {
@@ -120,6 +135,7 @@ function App() {
 
       {!isLoading ? (
         <PushableButton
+          disabled={isDisabled}
           text={!listening ? 'Push to talk' : 'Release'}
           Icon={() => {
             if (listening) return <MicIcon />;
