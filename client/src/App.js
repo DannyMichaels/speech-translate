@@ -105,7 +105,8 @@ function App() {
 
       if (isTouchStart) {
         handleReset();
-        if (listening && transcript) {
+
+        if (speechSynthesis.speaking) {
           window.speechSynthesis.cancel();
           SpeechRecognition.stopListening();
         }
