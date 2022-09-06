@@ -125,7 +125,7 @@ function App() {
       const utter = new SpeechSynthesisUtterance(translatedText);
       const voices = speechSynthesis.getVoices();
 
-      // utter.voice = voiceSelector(voices);
+      utter.voice = voiceSelector(voices);
 
       utter.volume = 1;
 
