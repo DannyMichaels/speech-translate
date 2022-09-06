@@ -108,10 +108,14 @@ function App() {
   );
 
   useEffect(() => {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = voiceSelector();
-    window.speechSynthesis.speak(utter);
-  }, [text, voiceSelector]);
+    if (!listening) {
+      const utter = new SpeechSynthesisUtterance(transcript);
+      // utter.lang = voiceSelector();
+      utter.volume = 1;
+
+      window.speechSynthesis.speak(utter);
+    }
+  }, [listening, transcript]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
