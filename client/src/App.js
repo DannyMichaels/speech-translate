@@ -123,7 +123,6 @@ function App() {
     if (!listening && translatedText) {
       const utter = new SpeechSynthesisUtterance(translatedText);
       const voices = speechSynthesis.getVoices();
-      alert(JSON.stringify(voices));
 
       utter.voice = voiceSelector(voices);
 
