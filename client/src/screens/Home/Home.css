@@ -14,3 +14,14 @@
   display: flex;
   min-height: 20px;
 }
+
+.Home__ModeSelect {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.Home__ModeSelect > h1 {
+  margin-right: 20px;
+}

@@ -105,7 +105,7 @@ function SpeechTranslate() {
   }, [listening, translatedText]);
 
   return (
-    <div className="home__SpeechTranslate">
+    <div className="Home__SpeechTranslate">
       <IOSOnly>
         <p>Microphone: {listening ? 'on' : 'off'}</p>
       </IOSOnly>

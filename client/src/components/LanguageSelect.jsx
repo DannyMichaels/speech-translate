@@ -1,6 +1,9 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import ComboBox from './ComboBox';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import IconButton from '@mui/material/IconButton';
+
 import { useLanguageStore } from '../stores/language-store';
 
 const defaultOpts = [
@@ -14,6 +17,7 @@ function LanguageSelect({ options = defaultOpts }) {
     setSourceLanguage,
     targetLanguage,
     setTargetLanguage,
+    swapLanguages,
   } = useLanguageStore();
 
   return (
@@ -29,6 +33,10 @@ function LanguageSelect({ options = defaultOpts }) {
         renderOption={renderOption}
         onChange={(_, opt) => setSourceLanguage(opt.value)}
       />
+
+      <IconButton onClick={swapLanguages}>
+        <SwapHorizIcon />
+      </IconButton>
 
       <ComboBox
         label={
